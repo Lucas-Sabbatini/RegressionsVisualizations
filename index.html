@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Linear Regression Visualization</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.6/full/pyodide.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script src="formatting.js" defer></script>
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</script>
+
+  </head>
+
+  <body>
+    <div>
+        <h2>Linear Regression</h2>
+        <div>
+                <input type="text" name="modeloLinear" value="Type the function you wanna use as a model..." />
+                <button id="btn">Go!</button>
+        </div>
+        <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div></div>
+        <div id="plot" style="width:600px;height:400px;"></div>
+        <div class="explanation">
+            <p>&emsp;Linear regression is a type of supervised machine-learning algorithm that learns from the labelled datasets and maps the data points with most optimized linear functions which can be used for prediction on new datasets. The prediction function is defined as: </p>
+            <div id="modelPredictionDefinition"></div>
+            <p>&emsp;In linear regression, you utilize input training data to fit the parameters <span id="wbParameters"></span> by minimizing a measure of the error between our predictions <span id="modelPrediction"></span> and the actual data <span id="actualResult"></span>. The measure is called the <span id="costFunction2"></span>. In training you measure the cost over all of our training samples <span id="wibiParameters"></span>, the cost id defined as:</p>
+            <div id="costFunctionDefinition"></div>
+            <h3 style="margin-bottom: 10px;">But how do we optimize values w and b in order to get the lowest cost function possible?</h3>
+            <p>&emsp;Gradient descent is a simple iterative method for minimizing a function — in ML, usually the cost function. Starting from some initial parameters, you repeatedly move them a small step opposite to the cost’s gradient, gradually “descending” toward the function’s minimum. It is defined as:</p>
+            <div id="gradientDescentDefinition"></div>
+            <p>&emsp;Where n is the number of features, parameters W and B are updated simutansly, the alpha constant is called "learning rate" and represents how heavly the derivatives of J will influence in the values of W and B. Finallly, the partial derivatives of J result in: </p>
+            <div id="partialDerivative"></div>
+            <p>&emsp;You can se the full implementation of this algorithm in the <a href="https://github.com/Lucas-Sabbatini">Github Repo for this project</a>.</p>
+        </div>
+    </div>
+    <footer class="site-footer">
+        <p class="footer-text">Made with 🧑🏼‍💻 and ☕ by Lucas Janot</p>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/in/lucas-janot" target="_blank" aria-label="LinkedIn" id="linkedin">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.7 4.9-2.7 5.3 0 6.3 3.5 6.3 8v9H18v-8.1c0-1.9-.03-4.4-2.7-4.4-2.7 0-3.1 2.1-3.1 4.2V24H7.5V8z"/>
+            </svg>
+            </a>
+            <a href="https://github.com/Lucas-Sabbatini" target="_blank" aria-label="GitHub" id="github">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.3 1.2-3.11-.12-.29-.52-1.45.12-3.02 0 0 .97-.31 3.17 1.19a11.04 11.04 0 0 1 5.77 0c2.19-1.5 3.17-1.19 3.17-1.19.64 1.57.24 2.73.12 3.02.75.8 1.2 1.85 1.2 3.11 0 4.42-2.7 5.4-5.27 5.7.41.36.78 1.08.78 2.17 0 1.57-.01 2.84-.01 3.23 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+            </a>
+        </div>
+    </footer>
+  </body>
+</html>
