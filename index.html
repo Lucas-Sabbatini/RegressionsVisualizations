@@ -13,10 +13,12 @@
     <!-- To automatically render math in text elements, include the auto-render extension: -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
+
     <script src="formatting.js" defer></script>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="style.css">
-</script>
+    <script src="assets/wasm_exec.js"></script>
+    <link rel="icon" type="image/x-icon" href="/assets/qq-plot.ico">
 
   </head>
 
@@ -28,7 +30,7 @@
                 <button id="btn">Go!</button>
         </div>
         <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div></div>
-        <div id="plot" style="width:600px;height:400px;"></div>
+        <div id="plot"></div>
         <div class="explanation">
             <p>&emsp;Linear regression is a type of supervised machine-learning algorithm that learns from the labelled datasets and maps the data points with most optimized linear functions which can be used for prediction on new datasets. The prediction function is defined as: </p>
             <div id="modelPredictionDefinition"></div>
@@ -39,7 +41,7 @@
             <div id="gradientDescentDefinition"></div>
             <p>&emsp;Where n is the number of features, parameters W and B are updated simutansly, the alpha constant is called "learning rate" and represents how heavly the derivatives of J will influence in the values of W and B. Finallly, the partial derivatives of J result in: </p>
             <div id="partialDerivative"></div>
-            <p>&emsp;You can se the full implementation of this algorithm in the <a href="https://github.com/Lucas-Sabbatini">Github Repo for this project</a>.</p>
+            <p>&emsp;You can se the full implementation of this algorithm in the <a href="https://github.com/Lucas-Sabbatini/RegressionsVisualizations" target="_blank">Github Repo for this project</a>.</p>
         </div>
     </div>
     <footer class="site-footer">

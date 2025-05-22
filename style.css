@@ -66,14 +66,13 @@ button:hover {
 
 .explanation {
   display: flex;
-  flex-direction: column;    /* mantém os parágrafos em coluna */
+  flex-direction: column;    
 }
 .explanation > div {
-  align-self: center;        /* centraliza somente este filho */
+  align-self: center;  
   margin: 16px;
 }
 
-/* Links */
 a:link {
   color: #58A6FF;
 }
@@ -84,34 +83,33 @@ a:hover {
   color: #1F6FEB;
 }
 
-
 .site-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background: #151b23;
-    color: #f0f6fc;
-    border-top: 1px solid #30363d;
-    font-size: 0.9rem;
-  }
-  .footer-text {
-    margin: 0;
-  }
-  .footer-links a {
-    margin-left: 1rem;
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
-  }
-  .footer-links #linkedin:hover {
-    color: #58a6ff;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #151b23;
+  color: #f0f6fc;
+  border-top: 1px solid #30363d;
+  font-size: 0.9rem;
+}
+.footer-text {
+  margin: 0;
+}
+.footer-links a {
+  margin-left: 1rem;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+.footer-links #linkedin:hover {
+  color: #58a6ff;
+}
 
-  .footer-links #github:hover {
-    color:#0d1117;
-  }
-  .footer-links svg {
-    vertical-align: middle;
-    fill: currentColor;
-  }
+.footer-links #github:hover {
+  color:#0d1117;
+}
+.footer-links svg {
+  vertical-align: middle;
+  fill: currentColor;
+}
