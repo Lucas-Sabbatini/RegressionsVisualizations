@@ -23,14 +23,26 @@
   </head>
 
   <body>
-    <div>
-        <h2>Linear Regression</h2>
-        <div>
-                <input type="text" name="modeloLinear" value="Type the function you wanna use as a model..." />
-                <button id="btn">Go!</button>
+        <header>
+            <h2>Linear Regression</h2>
+            <div>
+                    <input type="text" id="modeloLinear" placeholder="Type the function you wanna use as a model..." />
+                    <button id="btn">Go!</button>
+            </div>
+            <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div></div>
+        </header>
+        <div id="plotsWrap">
+            <div id="plot"></div>
+            <div id="addPoints">
+                <h4>Add points to the plot:</h4>
+                <div class="addWrapers"><div id="x1"></div><input type="number" name="xInput" /></div>
+                <div class="addWrapers"><div id="x2"></div><input type="number" name="yInput" /></div>
+                <div class="addWrapers"><div id="y"></div><input type="number" name="zInpu" /></div>
+                <button id="addBnt">Add</button>
+            </div>
+            <div id="gradientPlot"></div>
         </div>
-        <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div></div>
-        <div id="plot"></div>
+        
         <div class="explanation">
             <p>&emsp;Linear regression is a type of supervised machine-learning algorithm that learns from the labelled datasets and maps the data points with most optimized linear functions which can be used for prediction on new datasets. The prediction function is defined as: </p>
             <div id="modelPredictionDefinition"></div>
@@ -43,7 +55,6 @@
             <div id="partialDerivative"></div>
             <p>&emsp;You can se the full implementation of this algorithm in the <a href="https://github.com/Lucas-Sabbatini/RegressionsVisualizations" target="_blank">Github Repo for this project</a>.</p>
         </div>
-    </div>
     <footer class="site-footer">
         <p class="footer-text">Made with 🧑🏼‍💻 and ☕ by Lucas Janot</p>
         <div class="footer-links">

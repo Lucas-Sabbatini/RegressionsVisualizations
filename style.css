@@ -13,17 +13,16 @@ body {
   color: #f0f6fc;
 }
 
-/* Container geral para centralizar */
-body > div {
-  max-width: 800px;
-  margin: 0 auto 40px;
-  padding: 20px;
+header{
+    max-width: 800px;
+    margin: 0 auto ;
 }
 
 /* Títulos */
 h2 {
   font-size: 1.8rem;
   margin-bottom: 16px;
+  margin-top: 10px;
 }
 
 /* Inputs e botões */
@@ -38,6 +37,26 @@ input[type="text"] {
   color: #fff;
 
 }
+
+/* Inputs numéricos (mesmo estilo dos textuais) */
+input[type="number"] {
+  width: 100px;
+  margin-left: auto;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #3d444d;
+  border-radius: 4px;
+  margin-right: 8px;
+  background-color: #151b23;
+  color: #fff;
+  appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 button {
   padding: 8px 16px;
@@ -64,9 +83,37 @@ button:hover {
     margin-left: 10px;
 }
 
+#plotsWrap{
+  width: fit-content;
+  margin-top: 40px;
+  margin-bottom: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+
+#addPoints{
+  margin-left: 20px;
+  margin-right: 100px;
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+}
+
+.addWrapers{
+  display: flex;
+  margin:10px 0px;
+}
+
+#addBnt{
+  margin-left: auto;
+}
+
 .explanation {
   display: flex;
-  flex-direction: column;    
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto 40px;
 }
 .explanation > div {
   align-self: center;  

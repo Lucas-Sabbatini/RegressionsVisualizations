@@ -8,6 +8,9 @@ costFunctionDefinition = document.getElementById("costFunctionDefinition")
 modelPredictionDefinition = document.getElementById("modelPredictionDefinition")
 gradientDescentDefinition = document.getElementById("gradientDescentDefinition")
 partialDerivative = document.getElementById("partialDerivative")
+x1 = document.getElementById("x1")
+x2 = document.getElementById("x2")
+y = document.getElementById("y")
 
 katex.render("\\textbf{J}(\\vec w,b)=", costFunction, {
     throwOnError: false
@@ -53,5 +56,17 @@ katex.render(String.raw`
  \frac{\partial J(\mathbf{w},b)}{\partial w_j}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{w},b}(\mathbf{x}^{(i)}) - y^{(i)})x_{j}^{(i)} \\
  \frac{\partial J(\mathbf{w},b)}{\partial b}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{w},b}(\mathbf{x}^{(i)}) - y^{(i)})
  `,partialDerivative,{
+    throwOnError: false
+});
+
+katex.render("x \\small 1", x1, {
+    throwOnError: false
+});
+
+katex.render("x \\small 2", x2, {
+    throwOnError: false
+});
+
+katex.render("y", y, {
     throwOnError: false
 });
