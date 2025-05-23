@@ -81,18 +81,13 @@ func parseFeatures(featuresString string) []string {
 	return parts
 }
 
-func generateRandomDots(this js.Value, args []js.Value) interface{} {
-	if len(args) < 1 {
-		js.Global().Get("console").Call("error", "Expected one string argument")
-		return nil
+func sliceToFloat64Array(slice []float64) js.Value {
+	uint8ArrayConstructor := js.Global().Get("Float64Array")
+	buffer := js.Global().Get("ArrayBuffer").New(len(slice) * 8)
+	view := uint8ArrayConstructor.New(buffer)
+
+	for i, v := range slice {
+		view.SetIndex(i, v)
 	}
-
-	input := args[0].String()
-	features := parseFeatures(input)
-
-	featuresLen := len(features)
-	weights, biass := generateRandomWB(featuresLen)
-	featuresMatrix := generateFeaturesMatrix(features)
-
-	return generateF_wb_xPredictionMatrix(weights, biass, featuresMatrix)
+	return view
 }

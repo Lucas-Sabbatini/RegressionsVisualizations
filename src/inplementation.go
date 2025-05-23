@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"syscall/js"
 )
 
@@ -38,7 +39,7 @@ func computeF_wb_x(w []float64, b float64, x []float64) (float64, error) {
 
 	var dotProduct float64
 	for i := 0; i < len(w); i++ {
-		dotProduct += w[i] + x[i]
+		dotProduct += w[i] * x[i]
 	}
 
 	return dotProduct + b, nil
@@ -63,9 +64,36 @@ func generateF_wb_xPredictionMatrix(w []float64, b float64, featuresMatrix [][][
 	return f_wb_x
 }
 
-// posso fazer uma função que retorna uma matriz com todas as features
-// será necessário normalizar os valores, preciso entender melhor como funciona isso
-// o plot recebe 3 vetores, com os valores em cada cordenada x, y , z
+func mapPredictionMatrix(f_wb_xMatrix [][]float64) interface{} {
+	if f_wb_xMatrix == nil {
+		js.Global().Get("console").Call("error", "mapPredictionMatrix received nil f_wb_xMatrix")
+		return js.Null()
+	}
 
-//depois de tudo posso fazer uma função que recebe a matriz com as features normalizadas e retorna os vetores x1, x2 e y
-// x1 e x2 tendem a ser sempre os mesmos, números de -100 a 100 com o intervalo de 1
+	xGoSlice := make([]float64, 0, m*m)
+	yGoSlice := make([]float64, 0, m*m)
+	zGoSlice := make([]float64, 0, m*m)
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < m; j++ {
+			xGoSlice = append(xGoSlice, float64(i+1))
+			yGoSlice = append(yGoSlice, float64(j+1))
+			if i < len(f_wb_xMatrix) && j < len(f_wb_xMatrix[i]) {
+				zGoSlice = append(zGoSlice, f_wb_xMatrix[i][j])
+			} else {
+				js.Global().Get("console").Call("error", fmt.Sprintf("Index out of bounds accessing f_wb_xMatrix[%d][%d] during mapping", i, j))
+				zGoSlice = append(zGoSlice, math.NaN())
+			}
+		}
+	}
+
+	xJSArray := sliceToFloat64Array(xGoSlice)
+	yJSArray := sliceToFloat64Array(yGoSlice)
+	zJSArray := sliceToFloat64Array(zGoSlice)
+
+	return map[string]interface{}{
+		"x": xJSArray,
+		"y": yJSArray,
+		"z": zJSArray,
+	}
+}
