@@ -5,12 +5,10 @@ import (
 	"math"
 	"regexp"
 	"strconv"
+	"strings"
 	"syscall/js"
 	"unicode"
 )
-
-const m int16 = 100
-const n int16 = 100
 
 func isValidMonomial(s string) bool {
 	pattern := `^x[12](\^[0-9]+)?(x[12](\^[0-9]+)?)*$`
@@ -68,6 +66,21 @@ func computateFeature(x1 float64, x2 float64, mon string) (float64, error) {
 	return result, nil
 }
 
+func parseFeatures(featuresString string) []string {
+	if len(featuresString) < 2 || featuresString[0] != '{' || featuresString[len(featuresString)-1] != '}' {
+		return []string{}
+	}
+
+	trimmedString := featuresString[1 : len(featuresString)-1]
+
+	if trimmedString == "" {
+		return []string{}
+	}
+
+	parts := strings.Split(trimmedString, ",")
+	return parts
+}
+
 func generateRandomDots(this js.Value, args []js.Value) interface{} {
 	if len(args) < 1 {
 		js.Global().Get("console").Call("error", "Expected one string argument")
@@ -75,23 +88,11 @@ func generateRandomDots(this js.Value, args []js.Value) interface{} {
 	}
 
 	input := args[0].String()
+	features := parseFeatures(input)
 
-	result, err := computateFeature(2.0, 2.0, input)
-	if err != nil {
-		js.Global().Call("alert", err.Error())
-		return nil
-	}
-	js.Global().Get("console").Call("log", strconv.FormatFloat(result, 'f', 2, 64))
+	featuresLen := len(features)
+	weights, biass := generateRandomWB(featuresLen)
+	featuresMatrix := generateFeaturesMatrix(features)
 
-	return 0
-}
-
-func registerCallbacks() {
-	js.Global().Set("generateRandomDots", js.FuncOf(generateRandomDots))
-}
-
-func main() {
-	c := make(chan struct{})
-	registerCallbacks()
-	<-c
+	return generateF_wb_xPredictionMatrix(weights, biass, featuresMatrix)
 }
