@@ -1,4 +1,5 @@
-import { drawPlots, redrawPlot} from './plots/plots.js';
+import { drawPlots } from './plots/plots.js';
+import { start } from './plots/start.js';
 
 const goButton = document.getElementById("btn");
 
@@ -11,10 +12,7 @@ const go = new Go();
         goButton.addEventListener("click",()=>{
           let input =  document.getElementById("modeloLinear").value;
           try {
-          console.log("chamou")
-          let output = generateRandomDots(input);
-          redrawPlot(output.x,output.y,output.z)
-          console.log(output)
+            start(input)
         } catch (err) {
           alert("Erro ao executar função: " + err.message);
         }

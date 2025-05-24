@@ -91,3 +91,10 @@ export function redrawPlot(newX, newY, newZ) {
     }], layout);
 
 }
+
+export function redrawGradientPlot(newZData) {
+    Plotly.react('gradientPlot', [{
+        ...data_z1, 
+        z: newZData
+    }], layoutGradient);
+}
