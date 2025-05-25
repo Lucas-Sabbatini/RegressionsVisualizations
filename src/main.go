@@ -69,10 +69,39 @@ func costSurfaceToJs(this js.Value, args []js.Value) interface{} {
 	return float64MatrixToJsValue(costSurface)
 }
 
+func gradientDescentToJs(this js.Value, args []js.Value) interface{} {
+	//recieves -> featuresMatrix, Y, last values of w and b
+	//returns -> next values for w, b, j . 2d matrix representing the current prediction function plot
+	if len(args) < 4 {
+		js.Global().Get("console").Call("error", "Go: Expected four arguments in gradientDescentToJs")
+		return js.Undefined()
+	}
+
+	featuresMatrix := jsTo3DFloat64(args[0])
+	yAxis, err := jsValueToFloat64Array(args[1])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	w, err := jsValueToFloat64Array(args[2])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	b := args[3].Float()
+
+	newW, newB, newJ, f_wb_xPlot := gradientDescent(w, b, yAxis, featuresMatrix)
+
+	return createGradientObject(newW, newB, newJ, f_wb_xPlot)
+}
+
 func registerCallbacks() {
 	js.Global().Set("generateRandomDots", js.FuncOf(generateRandomDots))
 	js.Global().Set("featuresMatrixToJs", js.FuncOf(featuresMatrixToJs))
 	js.Global().Set("costSurfaceToJs", js.FuncOf(costSurfaceToJs))
+	js.Global().Set("gradientDescentToJs", js.FuncOf(gradientDescentToJs))
 }
 
 func main() {

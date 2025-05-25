@@ -14,7 +14,7 @@ const go = new Go();
           try {
             start(input)
         } catch (err) {
-          alert("Erro ao executar função: " + err.message);
+          alert(err.message);
         }
         })
 			});

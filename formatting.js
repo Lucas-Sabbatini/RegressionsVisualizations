@@ -10,9 +10,11 @@ gradientDescentDefinition = document.getElementById("gradientDescentDefinition")
 partialDerivative = document.getElementById("partialDerivative")
 x1 = document.getElementById("x1")
 x2 = document.getElementById("x2")
-y = document.getElementById("y")
+predictionFormulaExpanded = document.getElementById("predictionFormulaExpanded")
+monomials = document.getElementById("monomials")
 
-katex.render("\\textbf{J}(\\vec w,b)=", costFunction, {
+
+katex.render("\\textbf{J}(\\vec w,b) \\hspace{1mm}", costFunction, {
     throwOnError: false
 });
 
@@ -59,14 +61,19 @@ katex.render(String.raw`
     throwOnError: false
 });
 
-katex.render("x \\small 1", x1, {
+
+katex.render("x_1", x1, {
     throwOnError: false
 });
 
-katex.render("x \\small 2", x2, {
+katex.render("x_2", x2, {
     throwOnError: false
 });
 
-katex.render("y", y, {
+katex.render("f_{w, b}(x) = w_1 x_1 + w_2 x_2 + \\dots + w_n x_n + b", predictionFormulaExpanded, {
+    throwOnError: false
+});
+
+katex.render("\\{ x_1 ,x_2,x_3...\\}", monomials, {
     throwOnError: false
 });

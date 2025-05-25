@@ -98,3 +98,41 @@ export function redrawGradientPlot(newZData) {
         z: newZData
     }], layoutGradient);
 }
+
+export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface') {
+    const surfaceTrace = {
+        z: zDataMatrix,
+        type: 'surface',
+        name: surfaceName,
+        showscale: false, 
+        opacity: 0.75,    
+    };
+
+    Plotly.addTraces('plot', surfaceTrace);
+}
+
+export function addPointToGradientPlot(xCoord, yCoord, zCoord, gradientPointsTraceExists) {
+    if (!gradientPointsTraceExists) {
+        console.log(xCoord,yCoord,zCoord)
+        const initialPointsTrace = {
+            x: [xCoord],
+            y: [yCoord],
+            z: [zCoord],
+            mode: 'lines+markers', 
+            type: 'scatter3d',
+            name: 'Gradient Path',
+            marker: { size: 2, color: 'red' },
+            line: { color: 'rgb(255, 242, 0)', width: 2 }
+        };
+        Plotly.addTraces('gradientPlot', initialPointsTrace);
+        gradientPointsTraceExists = true;
+    } else {
+        const traceIndexToExtend = 1;
+
+        Plotly.extendTraces('gradientPlot', {
+            x: [[xCoord]],
+            y: [[yCoord]],
+            z: [[zCoord]]
+        }, [traceIndexToExtend]); 
+    }
+}

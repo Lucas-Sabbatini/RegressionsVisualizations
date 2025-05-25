@@ -58,26 +58,21 @@ func jsValueToFloat64Array(value js.Value) ([]float64, error) {
 	var length int
 	isSupportedType := false
 
-	// Tenta obter a propriedade 'length'. Se não existir ou não for um número, não é array-like.
 	lengthJS := value.Get("length")
 	if lengthJS.Type() != js.TypeNumber {
 		return nil, fmt.Errorf("o valor não possui uma propriedade 'length' numérica. Tipo: %s", value.Type().String())
 	}
 	length = lengthJS.Int()
 
-	// Verifica se é um Array padrão
 	if value.Type() == js.TypeObject && value.Get("constructor").Equal(js.Global().Get("Array")) {
 		isSupportedType = true
 	} else if value.Type() == js.TypeObject {
-		// Verifica se é um TypedArray comum.
-		// Adicione outros construtores de TypedArray se necessário (ex: "Int32Array", "Uint8Array").
 		typedArrayConstructors := []string{"Float64Array", "Float32Array"}
-		valueConstructor := value.Get("constructor") // O construtor do objeto JS
+		valueConstructor := value.Get("constructor")
 
-		// Verifica se valueConstructor é uma função (construtores são funções)
 		if valueConstructor.Type() == js.TypeFunction {
 			for _, taName := range typedArrayConstructors {
-				jsConstructorGlobal := js.Global().Get(taName) // O construtor global (ex: window.Float64Array)
+				jsConstructorGlobal := js.Global().Get(taName)
 				if !jsConstructorGlobal.IsUndefined() && !jsConstructorGlobal.IsNull() && valueConstructor.Equal(jsConstructorGlobal) {
 					isSupportedType = true
 					break
@@ -103,12 +98,12 @@ func jsValueToFloat64Array(value js.Value) ([]float64, error) {
 	}
 
 	if length == 0 {
-		return []float64{}, nil // Retorna slice vazio se o array JS estiver vazio
+		return []float64{}, nil
 	}
 
 	slice := make([]float64, length)
 	for i := 0; i < length; i++ {
-		element := value.Index(i) // Funciona para Array e TypedArray
+		element := value.Index(i)
 		if element.Type() != js.TypeNumber {
 			return nil, fmt.Errorf("elemento do array no índice %d não é um número (tipo: %s)", i, element.Type().String())
 		}
@@ -117,10 +112,9 @@ func jsValueToFloat64Array(value js.Value) ([]float64, error) {
 	return slice, nil
 }
 
-// float64_2D_ToJsValue converte [][]float64 para um js.Value (array JS de arrays).
 func float64MatrixToJsValue(matrix [][]float64) js.Value {
 	if matrix == nil {
-		return js.Null() // Ou js.Undefined() dependendo da preferência
+		return js.Null()
 	}
 	jsOuterArray := js.Global().Get("Array").New(len(matrix))
 	for i, row := range matrix {
@@ -131,4 +125,32 @@ func float64MatrixToJsValue(matrix [][]float64) js.Value {
 		jsOuterArray.SetIndex(i, jsInnerArray)
 	}
 	return jsOuterArray
+}
+
+func createGradientObject(newW []float64, newB float64, newJ float64, f_wb_xPlot [][]float64) interface{} {
+	jsNewW := js.Global().Get("Array").New(len(newW))
+	for i, val := range newW {
+		jsNewW.SetIndex(i, js.ValueOf(val))
+	}
+
+	jsNewB := js.ValueOf(newB)
+
+	jsNewJ := js.ValueOf(newJ)
+
+	jsFwbXPlot := js.Global().Get("Array").New(len(f_wb_xPlot))
+	for i, row := range f_wb_xPlot {
+		jsRow := js.Global().Get("Array").New(len(row))
+		for j, val := range row {
+			jsRow.SetIndex(j, js.ValueOf(val))
+		}
+		jsFwbXPlot.SetIndex(i, jsRow)
+	}
+
+	resultObj := js.Global().Get("Object").New()
+	resultObj.Set("w", jsNewW)
+	resultObj.Set("b", jsNewB)
+	resultObj.Set("j", jsNewJ)
+	resultObj.Set("predictionPlot", jsFwbXPlot)
+
+	return resultObj
 }

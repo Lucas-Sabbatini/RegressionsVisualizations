@@ -2,7 +2,7 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>Linear Regression Visualization</title>
+    <title>Regression Visualization</title>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.27.6/full/pyodide.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
@@ -24,29 +24,31 @@
 
   <body>
         <header>
-            <h2>Linear Regression</h2>
-            <div>
-                    <input type="text" id="modeloLinear" placeholder="Type the function you wanna use as a model..." />
-                    <button id="btn">Go!</button>
+            <h2>Polynomial Regression</h2>
+            <div>  
+                <div class="explanation" id="expTitle">
+                    <p>Type the monomials form the the prediction function in the form of: </p>
+                    <div id="predictionFormulaExpanded"></div>
+                    <p>You shuld type like: <span id="monomials"></span></p>
+                    <p>As we are dealing with 3 dimensions, only combinations of <span id="x1"></span> and <span id="x2"></span> are suported.</p>
+                </div>
+                <input type="text" id="modeloLinear" placeholder="Exs:  {x1,x2}  or  {x1,x2^2}  or  {x1^2,x2^2,x1x2}" />
+                <button id="btn">Go!</button>
             </div>
-            <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div></div>
+            <div id="reload">
+                <div class="costWrap"><p>Cost Function</p><div id="costFunction"></div><p>=&emsp;</p><span id="costValue"></span></div>
+                <div class="predictionWrap"><p>Prediction Function =&emsp;</p><div id="predictionFunction"></div>
+            </div>
         </header>
         <div id="plotsWrap">
             <div id="plot"></div>
-            <div id="addPoints">
-                <h4>Add points to the plot:</h4>
-                <div class="addWrapers"><div id="x1"></div><input type="number" name="xInput" /></div>
-                <div class="addWrapers"><div id="x2"></div><input type="number" name="yInput" /></div>
-                <div class="addWrapers"><div id="y"></div><input type="number" name="zInpu" /></div>
-                <button id="addBnt">Add</button>
-            </div>
             <div id="gradientPlot"></div>
         </div>
         
         <div class="explanation">
-            <p>&emsp;Linear regression is a type of supervised machine-learning algorithm that learns from the labelled datasets and maps the data points with most optimized linear functions which can be used for prediction on new datasets. The prediction function is defined as: </p>
+            <p>&emsp;Polynomial regression is a type of supervised machine-learning algorithm that learns from the labelled datasets and maps the data points with most optimized polynomial functions which can be used for prediction on new datasets. The prediction function is defined as: </p>
             <div id="modelPredictionDefinition"></div>
-            <p>&emsp;In linear regression, you utilize input training data to fit the parameters <span id="wbParameters"></span> by minimizing a measure of the error between our predictions <span id="modelPrediction"></span> and the actual data <span id="actualResult"></span>. The measure is called the <span id="costFunction2"></span>. In training you measure the cost over all of our training samples <span id="wibiParameters"></span>, the cost id defined as:</p>
+            <p>&emsp;In Polynomial regression, you utilize input training data to fit the parameters <span id="wbParameters"></span> by minimizing a measure of the error between our predictions <span id="modelPrediction"></span> and the actual data <span id="actualResult"></span>. The measure is called the <span id="costFunction2"></span>. In training you measure the cost over all of our training samples <span id="wibiParameters"></span>, the cost id defined as:</p>
             <div id="costFunctionDefinition"></div>
             <h3 style="margin-bottom: 10px;">But how do we optimize values w and b in order to get the lowest cost function possible?</h3>
             <p>&emsp;Gradient descent is a simple iterative method for minimizing a function — in ML, usually the cost function. Starting from some initial parameters, you repeatedly move them a small step opposite to the cost’s gradient, gradually “descending” toward the function’s minimum. It is defined as:</p>

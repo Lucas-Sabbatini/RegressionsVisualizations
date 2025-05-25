@@ -33,3 +33,12 @@ func generateRandomNormalF_wb_xMatrix(f_wb_x [][]float64) [][]float64 {
 
 	return randomF_wb_x
 }
+
+func generateW(w float64, nFeatures int) []float64 {
+	wArr := make([]float64, nFeatures)
+
+	for i := 0; i < nFeatures; i++ {
+		wArr[i] = w
+	}
+	return wArr
+}
