@@ -25,7 +25,7 @@ The application uses several technologies to provide a rich interactive experien
 
 ## Getting Started
 
-### This application is hosted on [GitHub Pages](https://github.com/Lucas-Sabbatini/RegressionsVisualizations)!
+### This application is hosted on [GitHub Pages](https://lucas-sabbatini.github.io/RegressionsVisualizations/)!
 
 ### OR...
 
