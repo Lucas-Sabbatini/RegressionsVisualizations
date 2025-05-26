@@ -102,7 +102,6 @@ export function redrawGradientPlot(newZData) {
 export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface') {
      const gd = document.getElementById('plot');
 
-    // 1) find all indices of existing surface traces with this name
     const toRemove = [];
     gd.data.forEach((trace, i) => {
         if (trace.type === 'surface' && trace.name === surfaceName) {
@@ -110,7 +109,6 @@ export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface'
         }
     });
 
-    // 2) delete them (if any)
     if (toRemove.length) {
         Plotly.deleteTraces(gd, toRemove);
     }

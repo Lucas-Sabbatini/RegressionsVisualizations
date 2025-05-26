@@ -1,7 +1,3 @@
-/**
- * Parses a string containing monomials and returns an array of monomial strings.
- * (No changes needed in this function for the request)
- */
 function parseMonomialString(monomialStr) {
     if (!monomialStr || typeof monomialStr !== 'string') {
         return [];
@@ -17,10 +13,6 @@ function parseMonomialString(monomialStr) {
     return monomialList;
 }
 
-/**
- * Formats a single monomial string (e.g., "x1", "x2^2", "x1x2") into LaTeX.
- * (No changes needed in this function for the request)
- */
 function formatSingleMonomialToLatex(monomial) {
     if (!monomial) return "";
     let latexResult = "";
