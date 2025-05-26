@@ -100,6 +100,21 @@ export function redrawGradientPlot(newZData) {
 }
 
 export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface') {
+     const gd = document.getElementById('plot');
+
+    // 1) find all indices of existing surface traces with this name
+    const toRemove = [];
+    gd.data.forEach((trace, i) => {
+        if (trace.type === 'surface' && trace.name === surfaceName) {
+        toRemove.push(i);
+        }
+    });
+
+    // 2) delete them (if any)
+    if (toRemove.length) {
+        Plotly.deleteTraces(gd, toRemove);
+    }
+
     const surfaceTrace = {
         z: zDataMatrix,
         type: 'surface',
@@ -109,11 +124,11 @@ export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface'
     };
 
     Plotly.addTraces('plot', surfaceTrace);
+    return surfaceTrace
 }
 
 export function addPointToGradientPlot(xCoord, yCoord, zCoord, gradientPointsTraceExists) {
     if (!gradientPointsTraceExists) {
-        console.log(xCoord,yCoord,zCoord)
         const initialPointsTrace = {
             x: [xCoord],
             y: [yCoord],

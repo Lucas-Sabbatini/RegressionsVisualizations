@@ -60,7 +60,7 @@ func computeNewW(w []float64, learningRate float64, b float64, y []float64, feat
 }
 
 func gradientDescent(w []float64, b float64, y []float64, featuresMatrix [][][]float64) ([]float64, float64, float64, [][]float64) {
-	const learningRate float64 = 0.0001
+	const learningRate float64 = 0.005
 	newW := computeNewW(w, learningRate, b, y, featuresMatrix)
 	newB := b - learningRate*dj_db(w, b, y, featuresMatrix)
 

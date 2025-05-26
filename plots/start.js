@@ -1,49 +1,95 @@
-import { redrawPlot, redrawGradientPlot, addSurfaceToPlot, addPointToGradientPlot} from './plots.js';
+import {
+  redrawPlot,
+  redrawGradientPlot,
+  addSurfaceToPlot,
+  addPointToGradientPlot
+} from './plots.js';
 import { updatePedictionFunction } from './parseFormat.js';
+
 const spanElemento = document.getElementById('costValue');
 
-export function start(input) {
-    let featuresMatrix = featuresMatrixToJs(input)
-    let output = generateRandomDots(featuresMatrix);
-    redrawPlot(output.x,output.y,output.z)
+export async function start(input, {
+  maxIterations = 100,   // how many steps to take
+  delay = 200           // ms between each update
+} = {}) {
+  const featuresMatrix = featuresMatrixToJs(input);
+  // initial random data & surface
+  const output = generateRandomDots(featuresMatrix);
+  redrawPlot(output.x, output.y, output.z);
+  let costSurface = costSurfaceToJs(featuresMatrix, output.z);
+  redrawGradientPlot(costSurface);
 
-    let costSurface = costSurfaceToJs(featuresMatrix,output.z)
-
-    redrawGradientPlot(costSurface)
-
-    setTimeout(gradientDescent(output.z,featuresMatrix, costSurface), 2000);
+  // run the animated descent
+  await runGradientDescent(
+    output.z,
+    featuresMatrix,
+    costSurface,
+    maxIterations,
+    delay
+  );
 }
 
+async function runGradientDescent(
+  yAxis,
+  featuresMatrix,
+  costSurface,
+  maxIterations,
+  delay
+) {
+  // initialize parameters
+  let b = generateRandom();
+  let w = Array(featuresMatrix[0][0].length)
+            .fill(0)
+            .map(() => generateRandom());
+  let prevCost = Infinity;
+  
+  for (let iter = 0; iter < maxIterations; iter++) {
+    console.log(maxIterations - iter)
+    // 1) compute next step
+    const response = gradientDescentToJs(featuresMatrix, yAxis, w, b);
+    const { w: newW, b: newB, j: costJ, predictionPlot } = response;
 
+    // 2) update DOM & plots
+    spanElemento.textContent = costJ.toFixed(2);
+    updatePedictionFunction(newW, newB);
+
+    // add the new surface (prediction plane) &
+    addSurfaceToPlot(predictionPlot);
+
+    // plot this point on the cost‐surface
+    const [plotW, plotB, plotJ] = adjustGradientPoint(newW[0], newB, costSurface);
+    addPointToGradientPlot(plotW, plotB, plotJ, iter > 0);
+
+    // 3) Prepare for next iteration
+    w = newW;
+    b = newB;
+
+    // stop early if cost isn’t changing
+    if (Math.abs(prevCost - costJ) < 1e-6) break;
+    prevCost = costJ;
+
+    // 4) wait so user can see it
+    await sleep(delay);
+  }
+}
+
+// simple sleep helper
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// (your existing helpers)
 function generateRandom() {
-    let max = 5;
-    let min = -5;
-    return Math.random() * (max - min) + min;
+  const max = 5, min = -5;
+  return Math.random() * (max - min) + min;
 }
-
-function gradientDescent(yAxis, featuresMatrix, costSurface){
-    var b = generateRandom()
-    var w = Array(featuresMatrix[0][0].length).fill(generateRandom())
-    let gradientPointsTraceExists = false;
-
-    var responseObject = gradientDescentToJs(featuresMatrix, yAxis, w, b)
-    let [newW, newB, newJ] = adjustGradientPoint(responseObject.w[0],responseObject.b,costSurface)
-    spanElemento.textContent = responseObject.j.toFixed(2);
-    updatePedictionFunction(responseObject.w,responseObject.b)
-
-    addSurfaceToPlot(responseObject.predictionPlot)
-    addPointToGradientPlot(newW, newB, newJ,gradientPointsTraceExists)
-}
-
 
 function roundToNearestPointCostSurface(num) {
-  return  Math.round(num + 10);
+  return Math.round(num + 10);
 }
 
-function adjustGradientPoint(wAxis,bAxis,costSurface){
-    let roundedW = roundToNearestPointCostSurface(wAxis)
-    let roundedB = roundToNearestPointCostSurface(bAxis)
-    let roundedJ = costSurface[roundedW][roundedB]
-
-    return [roundedW, roundedB, roundedJ];
+function adjustGradientPoint(wAxis, bAxis, costSurface) {
+  const i = roundToNearestPointCostSurface(wAxis);
+  const j = roundToNearestPointCostSurface(bAxis);
+  return [i, j, costSurface[10][10]];
 }

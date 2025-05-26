@@ -111,7 +111,6 @@ export function updatePedictionFunction(coefficients, bias) {
         return;
     }
 
-    console.log("Raw coefficients:", coefficients, "Raw bias:", bias);
     let input = document.getElementById("modeloLinear").value;
     let monomials = parseMonomialString(input);
 
