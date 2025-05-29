@@ -9,7 +9,7 @@ import { updatePedictionFunction } from './parseFormat.js';
 const spanElemento = document.getElementById('costValue');
 
 export async function start(input, {
-  maxIterations = 100,   
+  maxIterations = 50,   
   delay = 200           
 } = {}) {
   const featuresMatrix = featuresMatrixToJs(input);
@@ -41,8 +41,8 @@ async function runGradientDescent(
   let prevCost = Infinity;
   
   for (let iter = 0; iter < maxIterations; iter++) {
-    console.log(maxIterations - iter)
-    const response = gradientDescentToJs(featuresMatrix, yAxis, w, b);
+    var numIteractions =  Math.trunc(Math.pow(1.07,iter))
+    const response = gradientDescentToJs(featuresMatrix, yAxis, w, b,numIteractions);
     const { w: newW, b: newB, j: costJ, predictionPlot } = response;
 
     spanElemento.textContent = costJ.toFixed(2);
