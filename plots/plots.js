@@ -100,30 +100,30 @@ export function redrawGradientPlot(newZData) {
 }
 
 export function addSurfaceToPlot(zDataMatrix, surfaceName = 'Prediction Surface') {
-     const gd = document.getElementById('plot');
+  const gd = document.getElementById('plot');
 
-    const toRemove = [];
-    gd.data.forEach((trace, i) => {
-        if (trace.type === 'surface' && trace.name === surfaceName) {
-        toRemove.push(i);
-        }
-    });
+  if (!gd.layout.uirevision) {
+    Plotly.relayout(gd, { uirevision: 'keep-camera' });
+  }
 
-    if (toRemove.length) {
-        Plotly.deleteTraces(gd, toRemove);
-    }
+  let surfaceIdx = gd.data.findIndex(
+    trace => trace.type === 'surface' && trace.name === surfaceName
+  );
 
+  if (surfaceIdx >= 0) {
+    Plotly.restyle(gd, { z: [zDataMatrix] }, [surfaceIdx]);
+  } else {
     const surfaceTrace = {
-        z: zDataMatrix,
-        type: 'surface',
-        name: surfaceName,
-        showscale: false, 
-        opacity: 0.75,    
+      z: zDataMatrix,
+      type: 'surface',
+      name: surfaceName,
+      showscale: false,
+      opacity: 0.75
     };
-
-    Plotly.addTraces('plot', surfaceTrace);
-    return surfaceTrace
+    Plotly.addTraces(gd, surfaceTrace);
+  }
 }
+
 
 export function addPointToGradientPlot(xCoord, yCoord, zCoord, gradientPointsTraceExists) {
     if (!gradientPointsTraceExists) {
