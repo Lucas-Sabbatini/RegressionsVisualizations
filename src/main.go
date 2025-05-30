@@ -91,8 +91,16 @@ func gradientDescentToJs(this js.Value, args []js.Value) interface{} {
 	}
 
 	b := args[3].Float()
+	count := args[4].Int()
 
-	newW, newB, newJ, f_wb_xPlot := gradientDescent(w, b, yAxis, featuresMatrix)
+	newW := w
+	newB := b
+	var newJ float64
+	var f_wb_xPlot [][]float64
+
+	for i := 0; i < count; i++ {
+		newW, newB, newJ, f_wb_xPlot = gradientDescent(newW, newB, yAxis, featuresMatrix)
+	}
 
 	return createGradientObject(newW, newB, newJ, f_wb_xPlot)
 }
