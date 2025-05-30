@@ -73,11 +73,11 @@ function generateRandom() {
 }
 
 function roundToNearestPointCostSurface(num) {
-  return Math.round(num + 10);
+  return Math.min(19, Math.max(0, Math.round(num + 9)));
 }
 
 function adjustGradientPoint(wAxis, bAxis, costSurface) {
   const i = roundToNearestPointCostSurface(wAxis);
   const j = roundToNearestPointCostSurface(bAxis);
-  return [i, j, costSurface[10][10]];
+  return [i, j, costSurface[j][i]+10];
 }

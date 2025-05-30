@@ -10,17 +10,20 @@ const m int = 200
 
 func generateFeaturesMatrix(features []string) [][][]float64 {
 	var err error
-	featuresDataset := make([][][]float64, m)
-	len := len(features)
+	lenF := len(features)
 
+	featuresDataset := make([][][]float64, m)
 	for i := 0; i < m; i++ {
 		featuresDataset[i] = make([][]float64, m)
-
 		for j := 0; j < m; j++ {
-			featuresDataset[i][j] = make([]float64, len)
+			featuresDataset[i][j] = make([]float64, lenF)
+		}
+	}
 
-			for k := 0; k < len; k++ {
-				featuresDataset[i][j][k], err = computateFeature(float64(i+1), float64(j+1), features[k])
+	for i := 0; i < m; i++ {
+		for j := 0; j < m; j++ {
+			for k := 0; k < lenF; k++ {
+				featuresDataset[j][i][k], err = computateFeature(float64(i+1), float64(j+1), features[k])
 				if err != nil {
 					js.Global().Call("alert", err.Error())
 					return nil
@@ -78,8 +81,8 @@ func mapPredictionMatrix(f_wb_xMatrix [][]float64) interface{} {
 		for j := 0; j < m; j++ {
 			xGoSlice = append(xGoSlice, float64(i+1))
 			yGoSlice = append(yGoSlice, float64(j+1))
-			if i < len(f_wb_xMatrix) && j < len(f_wb_xMatrix[i]) {
-				zGoSlice = append(zGoSlice, f_wb_xMatrix[i][j])
+			if i < len(f_wb_xMatrix) && j < len(f_wb_xMatrix[j]) {
+				zGoSlice = append(zGoSlice, f_wb_xMatrix[j][i])
 			} else {
 				js.Global().Get("console").Call("error", fmt.Sprintf("Index out of bounds accessing f_wb_xMatrix[%d][%d] during mapping", i, j))
 				zGoSlice = append(zGoSlice, math.NaN())
