@@ -48,15 +48,15 @@ katex.render("f\\vec w,b(\\vec x) = \\vec w \\cdot \\vec x + b ",modelPrediction
 
 katex.render(String.raw`
  \text{repeat until convergence: }  \lbrace \newline 
-          \hspace{1cm} wj = wj - \alpha \frac{\partial J(w,b)}{\partial wj} \hspace{10mm} \small{j=1,2...n}\\
-          \hspace{1cm} b = b - \alpha \frac{\partial J(w,b)}{\partial b} \newline
+          \hspace{1cm} wj = wj - \alpha \frac{\partial J(\vec w,b)}{\partial wj} \hspace{10mm} \small{j=1,2...n}\\
+          \hspace{1cm} b = b - \alpha \frac{\partial J(\vec w,b)}{\partial b} \newline
           \rbrace`,gradientDescentDefinition,{
     throwOnError: false
 });
 
 katex.render(String.raw`
- \frac{\partial J(\mathbf{w},b)}{\partial w_j}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{w},b}(\mathbf{x}^{(i)}) - y^{(i)})x_{j}^{(i)} \\
- \frac{\partial J(\mathbf{w},b)}{\partial b}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{w},b}(\mathbf{x}^{(i)}) - y^{(i)})
+ \frac{\partial J(\mathbf{\vec w},b)}{\partial w_j}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{\vec w},b}(\mathbf{\vec x}^{(i)}) - y^{(i)})x_{j}^{(i)} \\
+ \frac{\partial J(\mathbf{\vec w},b)}{\partial b}  = \frac{1}{m} \sum\limits_{i = 1}^{m} (f_{\mathbf{\vec w},b}(\mathbf{\vec x}^{(i)}) - y^{(i)})
  `,partialDerivative,{
     throwOnError: false
 });

@@ -13,7 +13,11 @@ export async function start(input, {
   delay = 200           
 } = {}) {
   const featuresMatrix = featuresMatrixToJs(input);
-  const output = generateRandomDots(featuresMatrix);
+  const outputWB = generateRandomWeightsBias(featuresMatrix[0][0].length)
+  const targetW = outputWB.w
+  const targetB = outputWB.b
+  console.log(targetW,targetB)
+  const output = generateRandomDots(featuresMatrix,targetW,targetB);
   redrawPlot(output.x, output.y, output.z);
   let costSurface = costSurfaceToJs(featuresMatrix, output.z);
   redrawGradientPlot(costSurface);
