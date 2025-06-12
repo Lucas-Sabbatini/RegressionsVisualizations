@@ -2,15 +2,16 @@ package main
 
 import (
 	"math"
+	"syscall/js"
 )
 
+// recieves -> y, array containig the respective y for each x1 and x2 | featuresMatrix -> 3d matrix with the value for each monomial assuming the values of x1 and x2
+// recieves -> w0, array containig the original/target values from the vector w
+// returns -> The gradient surface cost correctly reduced each W dimension using euclidian distance and direction.
 func dimensionReduction(y []float64, featuresMatrix [][][]float64, w0 []float64) [][]float64 {
-	//recieves -> y, array containig the respective y for each x1 and x2 | featuresMatrix -> 3d matrix with the value for each monomial assuming the values of x1 and x2
-	//recieves -> w0, array containig the original/target values from the vector w
-	//returns -> The gradient surface cost correctly reduced each W dimension using euclidian distance and direction.
-
+	numDimensions := len(w0)
 	pace := 1
-	n := 20
+	n := 21
 	move := 10
 	costSurface := make([][]float64, n)
 
@@ -18,65 +19,18 @@ func dimensionReduction(y []float64, featuresMatrix [][][]float64, w0 []float64)
 
 		costSurface[i] = make([]float64, n)
 		for j := 0; j < n; j++ {
-			w := float64(i*pace - move)
-			costSurface[i][j] = computeCost(generateW(w, len(featuresMatrix[0][0])), float64(j*pace-move), y, featuresMatrix)
-		}
-	}
-
-	for i := 0; i < n; i++ {
-
-		costSurface[i] = make([]float64, n)
-		for j := 0; j < n; j++ {
-			w := float64(i*pace - move)
-			costSurface[i][j] = computeCost(generateW(w, len(featuresMatrix[0][0])), float64(j*pace-move), y, featuresMatrix)
+			distanceVector := vectorScalarMult(vetDist(numDimensions), float64(i*pace-move))
+			w := vectorPlusDot(distanceVector, w0)
+			js.Global().Get("console").Call("log", scalerSignedDistance(w, w0))
+			costSurface[i][j] = computeCost(w, float64(j*pace-move), y, featuresMatrix)
 		}
 	}
 
 	return costSurface
 }
 
-func generateCostTable(y []float64, featuresMatrix [][][]float64, w0 []float64) [][]float64 {
-	//recieves -> y, array containig the respective y for each x1 and x2 | featuresMatrix -> 3d matrix with the value for each monomial assuming the values of x1 and x2
-	//recieves -> w0, array containig the original/target values from the vector w
-	//returns -> a table with columns for: values B, W1, W2... distance from W and W0 and the respective cost these values generate.
-	numW := len(featuresMatrix[0][0])
-
-	w := make([]float64, numW)
-	i := 0
-	costTable := make([][]float64, int(math.Pow(21, float64(numW+1))))
-
-	for b := -10; b <= 10; b++ {
-		iterateW(w, 0, func(comb []float64) {
-			costTable[i] = make([]float64, numW+3)
-
-			costTable[i][0] = float64(b)
-			for j := 1; i < numW+1; j++ {
-				costTable[i][j] = comb[j-1]
-			}
-			costTable[i][numW+1] = scalerSignedDistance(comb, w0)
-			costTable[i][numW+2] = computeCost(comb, float64(b), y, featuresMatrix)
-			i++
-		})
-	}
-	return costTable
-}
-
-func iterateW(w []float64, idx int, callback func([]float64)) {
-	if idx == len(w) {
-		comb := make([]float64, len(w))
-		copy(comb, w)
-		callback(comb)
-		return
-	}
-
-	for val := -10; val <= 10; val++ {
-		w[idx] = float64(val)
-		iterateW(w, idx+1, callback)
-	}
-}
-
 func scalerSignedDistance(w []float64, w0 []float64) float64 {
-	d := createD(len(w))
+	d := createD(len(w), math.Pow(1.0/float64(len(w)), 0.5))
 
 	if len(w) != len(w0) {
 		panic("signedDistance: w and w0 must have the same length")
@@ -88,11 +42,36 @@ func scalerSignedDistance(w []float64, w0 []float64) float64 {
 	return u
 }
 
-func createD(n int) []float64 {
-	d := make([]float64, n)
+func vetDist(numDimensions int) []float64 {
+	//quero q a distância inicial seja sempre 1
+
+	catLen := math.Pow(1.0/float64(numDimensions), 0.5)
+	return createD(numDimensions, catLen)
+}
+
+func createD(numDimensions int, catLen float64) []float64 {
+	d := make([]float64, numDimensions)
 	for i := range d {
-		d[i] = 1.0
+		d[i] = catLen
 	}
 
 	return d
+}
+
+func vectorPlusDot(vector []float64, dot []float64) []float64 {
+	result := make([]float64, len(vector))
+	for i := range vector {
+		result[i] = vector[i] + dot[i]
+	}
+
+	return result
+}
+
+func vectorScalarMult(vector []float64, scalar float64) []float64 {
+	multD := make([]float64, len(vector))
+	for i := range multD {
+		multD[i] = vector[i] * scalar
+	}
+
+	return multD
 }

@@ -75,7 +75,13 @@ func costSurfaceToJs(this js.Value, args []js.Value) interface{} {
 		return js.Undefined()
 	}
 
-	costSurface := generateCostSurface(yAxis, featuresMatrix)
+	w0, err := jsValueToFloat64Array(args[2])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	costSurface := generateCostSurface(yAxis, featuresMatrix, w0)
 	return float64MatrixToJsValue(costSurface)
 }
 

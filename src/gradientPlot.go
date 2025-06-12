@@ -27,7 +27,7 @@ func computeCost(w []float64, b float64, y []float64, featuresMatrix [][][]float
 	return acumulatedErr / (2 * float64(m))
 }
 
-func generateCostSurface(y []float64, featuresMatrix [][][]float64) [][]float64 {
+func generateCostSurface(y []float64, featuresMatrix [][][]float64, w0 []float64) [][]float64 {
 
-	return costSurface
+	return dimensionReduction(y, featuresMatrix, w0)
 }
