@@ -22,18 +22,20 @@ export async function start(input, {
   await runGradientDescent(
     datasetDots.z,
     featuresMatrix,
-    costSurface,
+    //costSurface,
     maxIterations,
-    delay
+    delay,
+    outputWB.w
   );
 }
 
 async function runGradientDescent(
   yAxis,
   featuresMatrix,
-  costSurface,
+  //costSurface,
   maxIterations,
-  delay
+  delay,
+  targetW,
 ) {
   let b = generateRandom();
   let w = Array(featuresMatrix[0][0].length)
@@ -51,7 +53,7 @@ async function runGradientDescent(
 
     addSurfaceToPlot(predictionPlot);
 
-    const [plotW, plotB, plotJ] = adjustGradientPoint(newW[0], newB, costSurface);
+    const [plotW, plotB, plotJ] = adjustGradientPoint(newW, targetW, newB, costJ);
     addPointToGradientPlot(plotW, plotB, plotJ, iter > 0);
 
     w = newW;
@@ -74,12 +76,14 @@ function generateRandom() {
 }
 
 function roundToNearestPointCostSurface(num) {
-  let numRounded = Math.round(num/2 + 9)
-  return Math.min(19, Math.max(0, numRounded));
+  let numRounded = num + 10
+  return Math.min(20, Math.max(0, numRounded));
 }
 
-function adjustGradientPoint(wAxis, bAxis, costSurface) {
-  const i = roundToNearestPointCostSurface(wAxis);
-  const j = roundToNearestPointCostSurface(bAxis);
-  return [i, j, costSurface[j][i]+10];
+function adjustGradientPoint(w ,w0, b, costJ) {
+  const wAxis = scalerSignedDistanceToJs(w,w0) + 10.5;
+  const bAxis = roundToNearestPointCostSurface(b);
+  const j = costJ + 10 //costSurface[bAxis][wAxis]+10
+  console.log(b,wAxis,j)
+  return [bAxis, wAxis, j];
 }

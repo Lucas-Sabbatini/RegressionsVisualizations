@@ -85,6 +85,21 @@ func costSurfaceToJs(this js.Value, args []js.Value) interface{} {
 	return float64MatrixToJsValue(costSurface)
 }
 
+func scalerSignedDistanceToJs(this js.Value, args []js.Value) interface{} {
+	w, err := jsValueToFloat64Array(args[0])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+	w0, err := jsValueToFloat64Array(args[1])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	return scalerSignedDistance(w, w0)
+}
+
 func gradientDescentToJs(this js.Value, args []js.Value) interface{} {
 	//recieves -> featuresMatrix, Y, last values of w and b
 	//returns -> next values for w, b, j . 2d matrix representing the current prediction function plot
@@ -127,6 +142,7 @@ func registerCallbacks() {
 	js.Global().Set("costSurfaceToJs", js.FuncOf(costSurfaceToJs))
 	js.Global().Set("gradientDescentToJs", js.FuncOf(gradientDescentToJs))
 	js.Global().Set("generateRandomWeightsBias", js.FuncOf(generateRandomWeightsBias))
+	js.Global().Set("scalerSignedDistanceToJs", js.FuncOf(scalerSignedDistanceToJs))
 }
 
 func main() {

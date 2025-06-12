@@ -2,7 +2,6 @@ package main
 
 import (
 	"math"
-	"syscall/js"
 )
 
 // recieves -> y, array containig the respective y for each x1 and x2 | featuresMatrix -> 3d matrix with the value for each monomial assuming the values of x1 and x2
@@ -10,7 +9,6 @@ import (
 // returns -> The gradient surface cost correctly reduced each W dimension using euclidian distance and direction.
 func dimensionReduction(y []float64, featuresMatrix [][][]float64, w0 []float64) [][]float64 {
 	numDimensions := len(w0)
-	pace := 1
 	n := 21
 	move := 10
 	costSurface := make([][]float64, n)
@@ -19,10 +17,9 @@ func dimensionReduction(y []float64, featuresMatrix [][][]float64, w0 []float64)
 
 		costSurface[i] = make([]float64, n)
 		for j := 0; j < n; j++ {
-			distanceVector := vectorScalarMult(vetDist(numDimensions), float64(i*pace-move))
+			distanceVector := vectorScalarMult(vetDist(numDimensions), float64(i-move))
 			w := vectorPlusDot(distanceVector, w0)
-			js.Global().Get("console").Call("log", scalerSignedDistance(w, w0))
-			costSurface[i][j] = computeCost(w, float64(j*pace-move), y, featuresMatrix)
+			costSurface[i][j] = computeCost(w, float64(j-move), y, featuresMatrix)
 		}
 	}
 
