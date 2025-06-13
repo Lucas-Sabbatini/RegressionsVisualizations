@@ -13,26 +13,27 @@ export async function start(input, {
   delay = 200           
 } = {}) {
   const featuresMatrix = featuresMatrixToJs(input);
-  const output = generateRandomDots(featuresMatrix);
-  redrawPlot(output.x, output.y, output.z);
-  let costSurface = costSurfaceToJs(featuresMatrix, output.z);
+  const outputWB = generateRandomWeightsBias(featuresMatrix[0][0].length)
+  const datasetDots = generateRandomDots(featuresMatrix,outputWB.w,outputWB.b);
+  redrawPlot(datasetDots.x, datasetDots.y, datasetDots.z);
+  let costSurface = costSurfaceToJs(featuresMatrix, datasetDots.z,outputWB.w);
   redrawGradientPlot(costSurface);
 
   await runGradientDescent(
-    output.z,
+    datasetDots.z,
     featuresMatrix,
-    costSurface,
     maxIterations,
-    delay
+    delay,
+    outputWB.w
   );
 }
 
 async function runGradientDescent(
   yAxis,
   featuresMatrix,
-  costSurface,
   maxIterations,
-  delay
+  delay,
+  targetW,
 ) {
   let b = generateRandom();
   let w = Array(featuresMatrix[0][0].length)
@@ -50,7 +51,7 @@ async function runGradientDescent(
 
     addSurfaceToPlot(predictionPlot);
 
-    const [plotW, plotB, plotJ] = adjustGradientPoint(newW[0], newB, costSurface);
+    const [plotW, plotB, plotJ] = adjustGradientPoint(newW, targetW, newB, costJ);
     addPointToGradientPlot(plotW, plotB, plotJ, iter > 0);
 
     w = newW;
@@ -73,11 +74,14 @@ function generateRandom() {
 }
 
 function roundToNearestPointCostSurface(num) {
-  return Math.min(19, Math.max(0, Math.round(num + 9)));
+  let numRounded = num + 10
+  return Math.min(20, Math.max(0, numRounded));
 }
 
-function adjustGradientPoint(wAxis, bAxis, costSurface) {
-  const i = roundToNearestPointCostSurface(wAxis);
-  const j = roundToNearestPointCostSurface(bAxis);
-  return [i, j, costSurface[j][i]+10];
+function adjustGradientPoint(w ,w0, b, costJ) {
+  const wAxis = scalerSignedDistanceToJs(w,w0) + 10.5;
+  const bAxis = roundToNearestPointCostSurface(b);
+  const j = costJ + 30
+  console.log(b,wAxis,j)
+  return [bAxis, wAxis, j];
 }

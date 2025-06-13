@@ -127,11 +127,17 @@ func float64MatrixToJsValue(matrix [][]float64) js.Value {
 	return jsOuterArray
 }
 
-func createGradientObject(newW []float64, newB float64, newJ float64, f_wb_xPlot [][]float64) interface{} {
-	jsNewW := js.Global().Get("Array").New(len(newW))
-	for i, val := range newW {
-		jsNewW.SetIndex(i, js.ValueOf(val))
+func float64ToJsArray(arr []float64) js.Value {
+	jsNewArr := js.Global().Get("Array").New(len(arr))
+	for i, val := range arr {
+		jsNewArr.SetIndex(i, js.ValueOf(val))
 	}
+
+	return jsNewArr
+}
+
+func createGradientObject(newW []float64, newB float64, newJ float64, f_wb_xPlot [][]float64) interface{} {
+	jsNewW := float64ToJsArray(newW)
 
 	jsNewB := js.ValueOf(newB)
 
@@ -151,6 +157,17 @@ func createGradientObject(newW []float64, newB float64, newJ float64, f_wb_xPlot
 	resultObj.Set("b", jsNewB)
 	resultObj.Set("j", jsNewJ)
 	resultObj.Set("predictionPlot", jsFwbXPlot)
+
+	return resultObj
+}
+
+func createWeightsBiasObject(w []float64, b float64) interface{} {
+	jsNewW := float64ToJsArray(w)
+	jsNewB := js.ValueOf(b)
+
+	resultObj := js.Global().Get("Object").New()
+	resultObj.Set("w", jsNewW)
+	resultObj.Set("b", jsNewB)
 
 	return resultObj
 }

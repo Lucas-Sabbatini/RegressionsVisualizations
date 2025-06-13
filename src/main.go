@@ -4,6 +4,13 @@ import (
 	"syscall/js"
 )
 
+func generateRandomWeightsBias(this js.Value, args []js.Value) interface{} {
+	lenWeights := args[0].Int()
+	weights, bias := generateRandomWB(lenWeights)
+
+	return createWeightsBiasObject(weights, bias)
+}
+
 func generateRandomDots(this js.Value, args []js.Value) interface{} {
 	//recieves -> the normalized features matrix
 	//returns -> a random set of dots tha follows the main function structure defined in the features matrix
@@ -14,9 +21,12 @@ func generateRandomDots(this js.Value, args []js.Value) interface{} {
 	}
 
 	featuresMatrix := jsTo3DFloat64(args[0])
-	featuresLen := len(featuresMatrix[0][0])
-
-	weights, bias := generateRandomWB(featuresLen)
+	weights, err := jsValueToFloat64Array(args[1])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+	bias := args[2].Float()
 
 	f_wb_xMatrix := generateF_wb_xPredictionMatrix(weights, bias, featuresMatrix)
 
@@ -65,8 +75,29 @@ func costSurfaceToJs(this js.Value, args []js.Value) interface{} {
 		return js.Undefined()
 	}
 
-	costSurface := generateCostSurface(yAxis, featuresMatrix)
+	w0, err := jsValueToFloat64Array(args[2])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	costSurface := generateCostSurface(yAxis, featuresMatrix, w0)
 	return float64MatrixToJsValue(costSurface)
+}
+
+func scalerSignedDistanceToJs(this js.Value, args []js.Value) interface{} {
+	w, err := jsValueToFloat64Array(args[0])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+	w0, err := jsValueToFloat64Array(args[1])
+	if err != nil {
+		js.Global().Call("alert", err.Error())
+		return js.Undefined()
+	}
+
+	return scalerSignedDistance(w, w0)
 }
 
 func gradientDescentToJs(this js.Value, args []js.Value) interface{} {
@@ -110,6 +141,8 @@ func registerCallbacks() {
 	js.Global().Set("featuresMatrixToJs", js.FuncOf(featuresMatrixToJs))
 	js.Global().Set("costSurfaceToJs", js.FuncOf(costSurfaceToJs))
 	js.Global().Set("gradientDescentToJs", js.FuncOf(gradientDescentToJs))
+	js.Global().Set("generateRandomWeightsBias", js.FuncOf(generateRandomWeightsBias))
+	js.Global().Set("scalerSignedDistanceToJs", js.FuncOf(scalerSignedDistanceToJs))
 }
 
 func main() {

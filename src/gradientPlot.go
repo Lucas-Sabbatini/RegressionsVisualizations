@@ -27,20 +27,7 @@ func computeCost(w []float64, b float64, y []float64, featuresMatrix [][][]float
 	return acumulatedErr / (2 * float64(m))
 }
 
-func generateCostSurface(y []float64, featuresMatrix [][][]float64) [][]float64 {
-	pace := 1
-	n := 20
-	move := 10
-	costSurface := make([][]float64, n)
+func generateCostSurface(y []float64, featuresMatrix [][][]float64, w0 []float64) [][]float64 {
 
-	for i := 0; i < n; i++ {
-
-		costSurface[i] = make([]float64, n)
-		for j := 0; j < n; j++ {
-			w := float64(i*pace - move)
-			costSurface[i][j] = computeCost(generateW(w, len(featuresMatrix[0][0])), float64(j*pace-move), y, featuresMatrix)
-		}
-	}
-
-	return costSurface
+	return dimensionReduction(y, featuresMatrix, w0)
 }
