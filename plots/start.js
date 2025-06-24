@@ -82,6 +82,5 @@ function adjustGradientPoint(w ,w0, b, costJ) {
   const wAxis = scalerSignedDistanceToJs(w,w0) + 10.5;
   const bAxis = roundToNearestPointCostSurface(b);
   const j = costJ + 30
-  console.log(b,wAxis,j)
   return [bAxis, wAxis, j];
 }
